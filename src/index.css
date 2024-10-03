@@ -1,0 +1,12 @@
+body {
+    background-color: #f1f5f9;
+    min-height: 100vh;
+}
+
+.todo {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    background-color: white;
+    padding: 0.5rem 0.75rem;
+}
