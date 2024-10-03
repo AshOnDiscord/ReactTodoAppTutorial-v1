@@ -3,6 +3,8 @@ import "./App.css";
 import Todo from "./components/Todo";
 
 function App() {
+  const [title, setTitle] = useState("");
+
   const [todos, setTodos] = useState([
     {
       title: "Learn React",
@@ -16,6 +18,32 @@ function App() {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    addTodo({
+      title,
+      done: false,
+    });
+    setTitle("");
+  };
+
+  const addTodo = (todo: { title: string; done: boolean }) => {
+    setTodos([...todos, todo]);
+  };
+
+  const toggleTodo = (todo: { title: string; done: boolean }) => {
+    setTodos(
+      todos.map((t) => (t.title === todo.title ? { ...t, done: !t.done } : t)),
+    );
+  };
+
+  const deleteTodo = (todo: { title: string; done: boolean }) => {
+    setTodos(todos.filter((t) => t.title !== todo.title));
+  };
+
+  const updateTodo = (
+    originalTodo: string,
+    newTodo: { title: string; done: boolean },
+  ) => {
+    setTodos(todos.map((t) => (t.title === originalTodo ? newTodo : t)));
   };
 
   return (
@@ -42,7 +70,11 @@ function App() {
           gap: "2rem",
         }}
       >
-        <input type="text" />
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
         <button
           type="submit"
           style={{
@@ -62,7 +94,13 @@ function App() {
         }}
       >
         {todos.map((todo) => (
-          <Todo todo={todo} key={todo.title} />
+          <Todo
+            todo={todo}
+            key={todo.title}
+            toggleTodo={toggleTodo}
+            deleteTodo={deleteTodo}
+            updateTodo={(newTodo) => updateTodo(todo.title, newTodo)}
+          />
         ))}
       </ul>
     </div>
