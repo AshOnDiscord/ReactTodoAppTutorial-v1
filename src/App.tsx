@@ -19,6 +19,8 @@ function App() {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (todos.find((todo) => todo.title === title))
+      return alert("already exists");
     addTodo({
       title,
       done: false,
@@ -53,7 +55,7 @@ function App() {
     setTodos((todos) => {
       // duplicate test
       if (todos.find((t) => t.title === newTodo.title)) {
-        return;
+        return alert("name conflict");
       }
 
       const index = todos.findIndex((t) => t.title === originalTodo);
