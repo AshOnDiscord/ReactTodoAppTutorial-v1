@@ -1,11 +1,12 @@
 import { FormEvent, useState } from "react";
 import "./App.css";
 import Todo from "./components/Todo";
+import { useImmer } from "use-immer";
 
 function App() {
   const [title, setTitle] = useState("");
 
-  const [todos, setTodos] = useState([
+  const [todos, setTodos] = useImmer([
     {
       title: "Learn React",
       done: true,
@@ -26,24 +27,43 @@ function App() {
   };
 
   const addTodo = (todo: { title: string; done: boolean }) => {
-    setTodos([...todos, todo]);
+    setTodos((todos) => {
+      todos.push(todo);
+    });
   };
 
   const toggleTodo = (todo: { title: string; done: boolean }) => {
-    setTodos(
-      todos.map((t) => (t.title === todo.title ? { ...t, done: !t.done } : t)),
-    );
+    setTodos((todos) => {
+      const index = todos.findIndex((t) => t.title === todo.title);
+      todos[index].done = !todos[index].done;
+    });
   };
 
   const deleteTodo = (todo: { title: string; done: boolean }) => {
-    setTodos(todos.filter((t) => t.title !== todo.title));
+    setTodos((todos) => {
+      const index = todos.findIndex((t) => t.title === todo.title);
+      delete todos[index];
+    });
   };
 
   const updateTodo = (
     originalTodo: string,
     newTodo: { title: string; done: boolean },
   ) => {
-    setTodos(todos.map((t) => (t.title === originalTodo ? newTodo : t)));
+    setTodos((todos) => {
+      // duplicate test
+      if (todos.find((t) => t.title === newTodo.title)) {
+        return;
+      }
+
+      const index = todos.findIndex((t) => t.title === originalTodo);
+      if (index === -1) {
+        console.error("index not found");
+        return;
+      }
+      console.log(todos, index);
+      todos[index] = newTodo;
+    });
   };
 
   return (
